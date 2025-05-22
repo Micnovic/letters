@@ -1,7 +1,7 @@
 import Vapor
 import Leaf
 
-@MainActor var letters: [Letter] = []
+@MainActor var letters: [String : Letter] = [:]
 
 // configures your application
 public func configure(_ app: Application) async throws {
@@ -21,18 +21,19 @@ public func configure(_ app: Application) async throws {
 
 @MainActor func generateLetters() {
     for i in 0..<26 {
-        letters.append(Letter(index: i))
+        let letter = Letter(index: i)
+        letters[letter.char] = letter
     }
 }
 
 struct Letter: Codable {
-    let char: String
+    var char: String
     
-    var x: String
+    var x: Double
     
-    var y: String
+    var y: Double
     
-    let color: String
+    var color: String
     
     init(index: Int) {
         self.char = String(
@@ -46,9 +47,9 @@ struct Letter: Codable {
                 )
             )
         )
-        self.x = String(Double.random(in: 0...(800-50)))
+        self.x = Double.random(in: 0...(800-50))
         
-        self.y = String(Double.random(in: 0...(600-50)))
+        self.y = Double.random(in: 0...(600-50))
         
         self.color = "hsl\(Double.random(in: 0...360)), 100%, 50%"
     }
@@ -58,6 +59,18 @@ func lettersToJSON(_ letters: [Letter]) -> String {
     let encoder = JSONEncoder()
     encoder.outputFormatting = .withoutEscapingSlashes // Optional: for pretty printing
     let jsonData = try! encoder.encode(letters)
+    
+    // Convert jsonData to a String for display
+    let jsonString = String(data: jsonData, encoding: .utf8)
+    print(jsonString)
+    return jsonString ?? ""
+    
+}
+
+func letterToJSON(_ letter: Letter) -> String {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = .withoutEscapingSlashes // Optional: for pretty printing
+    let jsonData = try! encoder.encode(letter)
     
     // Convert jsonData to a String for display
     let jsonString = String(data: jsonData, encoding: .utf8)

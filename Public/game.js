@@ -76,19 +76,27 @@ function isInsideLetter(mousePos, letter) {
 }
 
 // WebSocket event listeners
-//socket.open = (event) => {
-//    for letter in letters {
-//        socket.send("wow")
-//    }
-//}
-
 socket.onmessage = (event) => {
-    const updatedLetter = JSON.parse(event.data);
-    const letter = letters.find(l => l.char === updatedLetter.char);
-    if (letter) {
-        letter.x = updatedLetter.x;
-        letter.y = updatedLetter.y;
-        drawLetters();
+    console.log("message")
+    const data = JSON.parse(event.data);
+    if (Array.isArray(data)) {
+//        for (updatedLetter of data) {
+//            const letter = letters.find(l => l.char === updatedLetter.char);
+//            if (letter) {
+//                letter.x = updatedLetter.x;
+//                letter.y = updatedLetter.y;
+//                drawLetters();
+//            }
+//        }
+    } else {
+        console.log("letter")
+        const updatedLetter = data
+        const letter = letters.find(l => l.char === updatedLetter.char);
+        if (letter) {
+            letter.x = updatedLetter.x;
+            letter.y = updatedLetter.y;
+            drawLetters();
+        }
     }
 };
 

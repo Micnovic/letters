@@ -13,20 +13,27 @@ func routes(_ app: Application) throws {
         // Add the WebSocket to the connected clients
         Task {
             await WebSocketManager.shared.add(ws)
-            await WebSocketManager.shared.broadcast(message: lettersToJSON(letters))
+            //let message = await lettersToJSON(letters)
+            for (key, letter) in await letters {
+                await WebSocketManager.shared.broadcast(message: letterToJSON(letter))
+            }
         }
        
        // Handle incoming messages
        ws.onText { ws, text in
            // Broadcast the received message to all connected clients
            Task {
-//               if let letter = try? JSONDecoder().decode(Letter.self, from: text.data(using: .utf8)!) {
-//                   if #available(macOS 15.0, *) {
-//                       let index = await letters.firstIndex { $0.char == letter.char }!
-//                   } else {
-//                       // Fallback on earlier versions
-//                }
-               await WebSocketManager.shared.broadcast(message: text)
+               if let letter = JSONStringToLetter(text) {
+                   if #available(macOS 15.0, *) {
+                       Task { @MainActor in letters[letter.char] = letter }
+                       await WebSocketManager.shared.broadcast(message: letterToJSON(letter))
+                   } else {
+                       // Fallback on earlier versions
+                   }
+               } else {
+                   print("could not convert: \(text)")
+               }
+//               await WebSocketManager.shared.broadcast(message: text)
            }
        }
        
@@ -65,4 +72,18 @@ class WebSocketManager {
             client.send(message)
         }
     }
+}
+
+func JSONStringToLetter(_ jsonString: String) -> Letter? {
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .useDefaultKeys
+ 
+    do {
+        let letter = try JSONDecoder().decode(Letter.self, from: jsonString.data(using: .utf8)!)
+        return letter
+    } catch {
+        print("Error decoding JSON: \(error)")
+    }
+    
+    return nil
 }
