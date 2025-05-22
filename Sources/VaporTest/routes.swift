@@ -14,7 +14,9 @@ func routes(_ app: Application) throws {
         Task {
             await WebSocketManager.shared.add(ws)
             //let message = await lettersToJSON(letters)
+            print("generating initial message")
             for (key, letter) in await letters {
+                print(letter)
                 await WebSocketManager.shared.broadcast(message: letterToJSON(letter))
             }
         }
@@ -67,7 +69,6 @@ class WebSocketManager {
     }
 
     func broadcast(message: String) {
-        print("broadcasting: \(message)")
         for client in clients {
             client.send(message)
         }

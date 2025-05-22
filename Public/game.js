@@ -16,8 +16,8 @@ let offsetX, offsetY;
 for (let i = 0; i < 26; i++) {
     letters.push({
         char: String.fromCharCode(65 + i), // A-Z
-        x: Math.random() * (canvas.width - 50),
-        y: Math.random() * (canvas.height - 50),
+        x: canvas.width / 2,
+        y: canvas.height / 2,
         color: `hsl(${Math.random() * 360}, 100%, 50%)`
     });
 }
@@ -76,6 +76,7 @@ function isInsideLetter(mousePos, letter) {
 }
 
 // WebSocket event listeners
+
 socket.onmessage = (event) => {
     console.log("message")
     const data = JSON.parse(event.data);

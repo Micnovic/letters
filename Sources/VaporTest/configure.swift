@@ -62,7 +62,6 @@ func lettersToJSON(_ letters: [Letter]) -> String {
     
     // Convert jsonData to a String for display
     let jsonString = String(data: jsonData, encoding: .utf8)
-    print(jsonString)
     return jsonString ?? ""
     
 }
@@ -74,7 +73,6 @@ func letterToJSON(_ letter: Letter) -> String {
     
     // Convert jsonData to a String for display
     let jsonString = String(data: jsonData, encoding: .utf8)
-    print(jsonString)
     return jsonString ?? ""
     
 }
