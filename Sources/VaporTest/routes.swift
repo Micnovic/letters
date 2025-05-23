@@ -14,6 +14,7 @@ func routes(_ app: Application) throws {
         Task {
             await WebSocketManager.shared.add(ws)
             //let message = await lettersToJSON(letters)
+            print("new connection")
             print("generating initial message")
             for (key, letter) in await letters {
                 print(letter)
@@ -27,7 +28,7 @@ func routes(_ app: Application) throws {
            Task {
                if let letter = JSONStringToLetter(text) {
                    if #available(macOS 15.0, *) {
-                       Task { @MainActor in letters[letter.char] = letter }
+                       Task { @MainActor in letters[letter.index] = letter }
                        await WebSocketManager.shared.broadcast(message: letterToJSON(letter))
                    } else {
                        // Fallback on earlier versions
@@ -69,6 +70,7 @@ class WebSocketManager {
     }
 
     func broadcast(message: String) {
+        print("broadcasting message: \(message)")
         for client in clients {
             client.send(message)
         }
