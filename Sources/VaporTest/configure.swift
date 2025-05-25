@@ -1,7 +1,7 @@
 import Vapor
 import Leaf
 
-let savePath = "/Users/Gleb/Downloads/letters.txt"
+let savePath = "/letters.txt"
 @MainActor var letters: [Int : Letter] = [:]
 
 // configures your application
