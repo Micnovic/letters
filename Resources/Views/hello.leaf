@@ -1,0 +1,6 @@
+Planets:
+<ul>
+#for(planet in planets):
+    <li>#(planet)</li>
+#endfor
+</ul>
